@@ -11,6 +11,7 @@ A production-ready **Java Swing + SQL** desktop application for managing a coach
 - Attendance Tracking
 - Fee/Payment Management
 - Reports and analytics
+- Role-based login entry for Student and Teacher accounts
 - Input validation and user-friendly errors
 - MVC-style layering: GUI, service, DAO, model
 
@@ -42,3 +43,8 @@ A production-ready **Java Swing + SQL** desktop application for managing a coach
    ```
 
 The app auto-initializes tables from `database/schema.sql` on startup.
+
+## Login
+- Launch the app and choose **Student** or **Teacher** on the login screen.
+- Credentials are based on records from **Students** and **Instructors** modules.
+- While creating records, set a password (minimum 6 characters). During update, leave password blank to keep the current one.

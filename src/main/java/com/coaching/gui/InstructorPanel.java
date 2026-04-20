@@ -14,6 +14,7 @@ public class InstructorPanel extends JPanel {
     private final JTextField search = new JTextField();
     private final JTextField name = new JTextField();
     private final JTextField email = new JTextField();
+    private final JPasswordField password = new JPasswordField();
     private final JTextField phone = new JTextField();
     private final JTextField specialization = new JTextField();
     private final JTextField availability = new JTextField();
@@ -28,9 +29,10 @@ public class InstructorPanel extends JPanel {
         searchBtn.addActionListener(e -> loadTable(search.getText()));
         top.add(searchBtn, BorderLayout.EAST);
 
-        JPanel form = new JPanel(new GridLayout(5, 2, 8, 8));
+        JPanel form = new JPanel(new GridLayout(6, 2, 8, 8));
         form.add(new JLabel("Name")); form.add(name);
         form.add(new JLabel("Email")); form.add(email);
+        form.add(new JLabel("Password")); form.add(password);
         form.add(new JLabel("Phone")); form.add(phone);
         form.add(new JLabel("Specialization")); form.add(specialization);
         form.add(new JLabel("Availability")); form.add(availability);
@@ -42,8 +44,8 @@ public class InstructorPanel extends JPanel {
         JButton refresh = new JButton("Refresh");
         actions.add(add); actions.add(update); actions.add(delete); actions.add(refresh);
 
-        add.addActionListener(e -> perform(() -> service.create(name.getText(), email.getText(), phone.getText(), specialization.getText(), availability.getText())));
-        update.addActionListener(e -> performWithSelectedId(id -> service.update(id, name.getText(), email.getText(), phone.getText(), specialization.getText(), availability.getText())));
+        add.addActionListener(e -> perform(() -> service.create(name.getText(), email.getText(), phone.getText(), specialization.getText(), availability.getText(), passwordText())));
+        update.addActionListener(e -> performWithSelectedId(id -> service.update(id, name.getText(), email.getText(), phone.getText(), specialization.getText(), availability.getText(), passwordText())));
         delete.addActionListener(e -> performWithSelectedId(service::delete));
         refresh.addActionListener(e -> loadTable(search.getText()));
 
@@ -55,6 +57,7 @@ public class InstructorPanel extends JPanel {
                 phone.setText(String.valueOf(model.getValueAt(row, 3)));
                 specialization.setText(String.valueOf(model.getValueAt(row, 4)));
                 availability.setText(String.valueOf(model.getValueAt(row, 5)));
+                password.setText("");
             }
         });
 
@@ -93,5 +96,9 @@ public class InstructorPanel extends JPanel {
         for (Instructor i : service.findAll(keyword)) {
             model.addRow(new Object[]{i.id(), i.name(), i.email(), i.phone(), i.specialization(), i.availability()});
         }
+    }
+
+    private String passwordText() {
+        return new String(password.getPassword());
     }
 }

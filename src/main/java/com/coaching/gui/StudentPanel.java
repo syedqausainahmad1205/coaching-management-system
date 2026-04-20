@@ -15,6 +15,7 @@ public class StudentPanel extends JPanel {
     private final JTextField search = new JTextField();
     private final JTextField name = new JTextField();
     private final JTextField email = new JTextField();
+    private final JPasswordField password = new JPasswordField();
     private final JTextField phone = new JTextField();
     private final JTextField address = new JTextField();
     private final JTextField enrollmentDate = new JTextField(DateUtil.today());
@@ -29,9 +30,10 @@ public class StudentPanel extends JPanel {
         searchBtn.addActionListener(e -> loadTable(search.getText()));
         top.add(searchBtn, BorderLayout.EAST);
 
-        JPanel form = new JPanel(new GridLayout(5, 2, 8, 8));
+        JPanel form = new JPanel(new GridLayout(6, 2, 8, 8));
         form.add(new JLabel("Name")); form.add(name);
         form.add(new JLabel("Email")); form.add(email);
+        form.add(new JLabel("Password")); form.add(password);
         form.add(new JLabel("Phone")); form.add(phone);
         form.add(new JLabel("Address")); form.add(address);
         form.add(new JLabel("Enrollment Date (YYYY-MM-DD)")); form.add(enrollmentDate);
@@ -43,8 +45,8 @@ public class StudentPanel extends JPanel {
         JButton refresh = new JButton("Refresh");
         actions.add(add); actions.add(update); actions.add(delete); actions.add(refresh);
 
-        add.addActionListener(e -> perform(() -> service.create(name.getText(), email.getText(), phone.getText(), address.getText(), enrollmentDate.getText())));
-        update.addActionListener(e -> performWithSelectedId(id -> service.update(id, name.getText(), email.getText(), phone.getText(), address.getText(), enrollmentDate.getText())));
+        add.addActionListener(e -> perform(() -> service.create(name.getText(), email.getText(), phone.getText(), address.getText(), enrollmentDate.getText(), passwordText())));
+        update.addActionListener(e -> performWithSelectedId(id -> service.update(id, name.getText(), email.getText(), phone.getText(), address.getText(), enrollmentDate.getText(), passwordText())));
         delete.addActionListener(e -> performWithSelectedId(service::delete));
         refresh.addActionListener(e -> loadTable(search.getText()));
 
@@ -56,6 +58,7 @@ public class StudentPanel extends JPanel {
                 phone.setText(String.valueOf(model.getValueAt(row, 3)));
                 address.setText(String.valueOf(model.getValueAt(row, 4)));
                 enrollmentDate.setText(String.valueOf(model.getValueAt(row, 5)));
+                password.setText("");
             }
         });
 
@@ -94,5 +97,9 @@ public class StudentPanel extends JPanel {
         for (Student s : service.findAll(keyword)) {
             model.addRow(new Object[]{s.id(), s.name(), s.email(), s.phone(), s.address(), s.enrollmentDate()});
         }
+    }
+
+    private String passwordText() {
+        return new String(password.getPassword());
     }
 }

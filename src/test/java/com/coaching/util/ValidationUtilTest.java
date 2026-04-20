@@ -36,4 +36,10 @@ class ValidationUtilTest {
         assertThrows(ValidationException.class, () -> ValidationUtil.validateEmail("user@domain..com"));
         assertThrows(ValidationException.class, () -> ValidationUtil.validateEmail(".user@domain.com"));
     }
+
+    @Test
+    void validatesPassword() {
+        ValidationUtil.validatePassword("secret1");
+        assertThrows(ValidationException.class, () -> ValidationUtil.validatePassword("123"));
+    }
 }
