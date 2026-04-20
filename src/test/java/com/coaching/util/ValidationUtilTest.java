@@ -39,7 +39,11 @@ class ValidationUtilTest {
 
     @Test
     void validatesPassword() {
+        ValidationUtil.validatePassword("123456");
         ValidationUtil.validatePassword("secret1");
+        ValidationUtil.validatePassword("pass@123");
         assertThrows(ValidationException.class, () -> ValidationUtil.validatePassword("123"));
+        assertThrows(ValidationException.class, () -> ValidationUtil.validatePassword("      "));
+        assertThrows(ValidationException.class, () -> ValidationUtil.validatePassword(null));
     }
 }
