@@ -16,9 +16,9 @@ public class CourseService {
     public void create(String name, String description, String duration, String fee, String instructorId,
                        String capacity, String enrolledStudents) {
         ValidationUtil.requireNonBlank(name, "Name");
-        double parsedFee = ValidationUtil.parsePositiveDouble(fee, "Fee");
-        int parsedCapacity = ValidationUtil.parsePositiveInt(capacity, "Capacity");
-        int parsedEnrolled = ValidationUtil.parsePositiveInt(enrolledStudents, "Enrolled Students");
+        double parsedFee = ValidationUtil.parseNonNegativeDouble(fee, "Fee");
+        int parsedCapacity = ValidationUtil.parseNonNegativeInt(capacity, "Capacity");
+        int parsedEnrolled = ValidationUtil.parseNonNegativeInt(enrolledStudents, "Enrolled Students");
         Integer parsedInstructor = parseOptionalInt(instructorId);
         dao.insert(new Course(null, name.trim(), trim(description), trim(duration), parsedFee, parsedInstructor,
                 parsedCapacity, parsedEnrolled));
@@ -27,9 +27,9 @@ public class CourseService {
     public void update(int id, String name, String description, String duration, String fee, String instructorId,
                        String capacity, String enrolledStudents) {
         ValidationUtil.requireNonBlank(name, "Name");
-        double parsedFee = ValidationUtil.parsePositiveDouble(fee, "Fee");
-        int parsedCapacity = ValidationUtil.parsePositiveInt(capacity, "Capacity");
-        int parsedEnrolled = ValidationUtil.parsePositiveInt(enrolledStudents, "Enrolled Students");
+        double parsedFee = ValidationUtil.parseNonNegativeDouble(fee, "Fee");
+        int parsedCapacity = ValidationUtil.parseNonNegativeInt(capacity, "Capacity");
+        int parsedEnrolled = ValidationUtil.parseNonNegativeInt(enrolledStudents, "Enrolled Students");
         Integer parsedInstructor = parseOptionalInt(instructorId);
         dao.update(new Course(id, name.trim(), trim(description), trim(duration), parsedFee, parsedInstructor,
                 parsedCapacity, parsedEnrolled));
@@ -47,7 +47,7 @@ public class CourseService {
         if (value == null || value.trim().isEmpty()) {
             return null;
         }
-        return ValidationUtil.parsePositiveInt(value, "Instructor ID");
+        return ValidationUtil.parseNonNegativeInt(value, "Instructor ID");
     }
 
     private String trim(String value) {

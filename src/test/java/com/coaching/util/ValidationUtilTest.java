@@ -8,12 +8,30 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ValidationUtilTest {
     @Test
-    void parsesPositiveInt() {
-        assertEquals(10, ValidationUtil.parsePositiveInt("10", "Capacity"));
+    void parsesNonNegativeInt() {
+        assertEquals(10, ValidationUtil.parseNonNegativeInt("10", "Capacity"));
+        assertEquals(0, ValidationUtil.parseNonNegativeInt("0", "Capacity"));
+    }
+
+    @Test
+    void parsesNonNegativeDouble() {
+        assertEquals(0.0, ValidationUtil.parseNonNegativeDouble("0", "Amount"));
+        assertEquals(12.5, ValidationUtil.parseNonNegativeDouble("12.5", "Amount"));
+    }
+
+    @Test
+    void validatesRequiredField() {
+        assertThrows(ValidationException.class, () -> ValidationUtil.requireNonBlank(" ", "Name"));
+    }
+
+    @Test
+    void acceptsValidEmail() {
+        ValidationUtil.validateEmail("student@example.com");
     }
 
     @Test
     void rejectsInvalidEmail() {
         assertThrows(ValidationException.class, () -> ValidationUtil.validateEmail("bad-email"));
+        assertThrows(ValidationException.class, () -> ValidationUtil.validateEmail("user@domain"));
     }
 }

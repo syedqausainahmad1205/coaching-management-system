@@ -24,8 +24,12 @@ public class MainFrame extends JFrame {
         tabs.addTab("Reports", reportsPanel);
 
         tabs.addChangeListener(e -> {
-            dashboardPanel.refresh();
-            reportsPanel.refresh();
+            java.awt.Component selected = tabs.getSelectedComponent();
+            if (selected == dashboardPanel) {
+                dashboardPanel.refresh();
+            } else if (selected == reportsPanel) {
+                reportsPanel.refresh();
+            }
         });
 
         setLayout(new BorderLayout());

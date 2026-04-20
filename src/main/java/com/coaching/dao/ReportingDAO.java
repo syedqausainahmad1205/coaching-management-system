@@ -8,8 +8,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class ReportingDAO {
+    private static final Set<String> ALLOWED_TABLES = Set.of(
+            "students", "instructors", "courses", "enrollments", "attendance", "payments"
+    );
+
     public Map<String, String> summary() {
         Map<String, String> map = new LinkedHashMap<>();
         map.put("Students", String.valueOf(count("students")));
@@ -23,6 +28,9 @@ public class ReportingDAO {
     }
 
     private int count(String table) {
+        if (!ALLOWED_TABLES.contains(table)) {
+            throw new IllegalArgumentException("Invalid table name for reporting: " + table);
+        }
         String sql = "SELECT COUNT(*) FROM " + table;
         try (DatabaseConnection.PooledConnection pooled = DatabaseConnection.getConnection();
              PreparedStatement ps = pooled.unwrap().prepareStatement(sql);

@@ -14,12 +14,12 @@ public final class ValidationUtil {
 
     public static void validateEmail(String email) {
         requireNonBlank(email, "Email");
-        if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+        if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
             throw new ValidationException("Invalid email format");
         }
     }
 
-    public static int parsePositiveInt(String value, String field) {
+    public static int parseNonNegativeInt(String value, String field) {
         try {
             int parsed = Integer.parseInt(value.trim());
             if (parsed < 0) {
@@ -31,7 +31,7 @@ public final class ValidationUtil {
         }
     }
 
-    public static double parsePositiveDouble(String value, String field) {
+    public static double parseNonNegativeDouble(String value, String field) {
         try {
             double parsed = Double.parseDouble(value.trim());
             if (parsed < 0) {

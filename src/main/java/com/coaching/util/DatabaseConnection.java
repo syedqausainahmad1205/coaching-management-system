@@ -35,9 +35,14 @@ public final class DatabaseConnection {
         }
     }
 
-    static void release(Connection connection) {
+    private static void release(Connection connection) {
         if (connection != null) {
-            POOL.offer(connection);
+            try {
+                POOL.put(connection);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new DatabaseException("Interrupted while returning DB connection", e);
+            }
         }
     }
 

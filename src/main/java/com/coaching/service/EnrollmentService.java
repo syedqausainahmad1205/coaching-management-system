@@ -16,8 +16,8 @@ public class EnrollmentService {
     }
 
     public void create(String studentId, String courseId, String status) {
-        int sid = ValidationUtil.parsePositiveInt(studentId, "Student ID");
-        int cid = ValidationUtil.parsePositiveInt(courseId, "Course ID");
+        int sid = ValidationUtil.parseNonNegativeInt(studentId, "Student ID");
+        int cid = ValidationUtil.parseNonNegativeInt(courseId, "Course ID");
         ValidationUtil.requireNonBlank(status, "Status");
         dao.insert(new Enrollment(null, sid, cid, DateUtil.today(), status.trim()));
         courseService.incrementEnrollment(cid);
