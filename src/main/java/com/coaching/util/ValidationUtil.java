@@ -21,7 +21,7 @@ public final class ValidationUtil {
 
     public static void validatePassword(String password) {
         requireNonBlank(password, "Password");
-        if (password.trim().length() < 6) {
+        if (password.length() < 6) {
             throw new ValidationException("Password must be at least 6 characters");
         }
     }

@@ -8,10 +8,12 @@ import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 public final class DatabaseInitializer {
     private static final Pattern SQL_IDENTIFIER = Pattern.compile("[A-Za-z_][A-Za-z0-9_]*");
+    private static final Set<String> ALLOWED_DEFINITIONS = Set.of("TEXT NOT NULL DEFAULT ''");
 
     private DatabaseInitializer() {
     }
@@ -62,7 +64,7 @@ public final class DatabaseInitializer {
     }
 
     private static String requireAllowedDefinition(String definition) {
-        if ("TEXT NOT NULL DEFAULT ''".equals(definition)) {
+        if (ALLOWED_DEFINITIONS.contains(definition)) {
             return definition;
         }
         throw new IllegalArgumentException("Unsupported SQL definition");

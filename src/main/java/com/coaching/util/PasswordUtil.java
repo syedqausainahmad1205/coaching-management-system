@@ -60,6 +60,8 @@ public final class PasswordUtil {
     }
 
     private static boolean verifyLegacySha256(String password, String passwordHash) {
+        // Supports existing accounts created before PBKDF2 migration where password hashes
+        // were stored as plain SHA-256 hex values. New/updated passwords always use PBKDF2.
         if (!passwordHash.matches("^[a-f0-9]{64}$")) {
             return false;
         }
