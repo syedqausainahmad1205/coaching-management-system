@@ -29,7 +29,7 @@ public class InstructorService {
         ValidationUtil.validateEmail(email);
         Instructor existing = dao.findById(id);
         if (existing == null) {
-            throw new ValidationException("Teacher not found");
+            throw new ValidationException("Instructor not found");
         }
         String passwordHash = password == null || password.isBlank()
                 ? existing.passwordHash()

@@ -47,7 +47,7 @@ public class LoginFrame extends JFrame {
             String enteredPassword = new String(password.getPassword());
             boolean authenticated = "Student".equals(selectedRole)
                     ? authService.authenticateStudent(enteredEmail, enteredPassword)
-                    : authService.authenticateTeacher(enteredEmail, enteredPassword);
+                    : authService.authenticateInstructor(enteredEmail, enteredPassword);
             if (!authenticated) {
                 UiUtil.showInfo(this, "Invalid credentials.");
                 return;

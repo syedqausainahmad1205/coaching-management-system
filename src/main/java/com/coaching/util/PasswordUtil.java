@@ -15,6 +15,7 @@ public final class PasswordUtil {
     private static final int SALT_BYTES = 16;
     private static final int ITERATIONS = 65_536;
     private static final int KEY_BITS = 256;
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
     private PasswordUtil() {
     }
@@ -22,7 +23,7 @@ public final class PasswordUtil {
     public static String hash(String password) {
         ValidationUtil.validatePassword(password);
         byte[] salt = new byte[SALT_BYTES];
-        new SecureRandom().nextBytes(salt);
+        SECURE_RANDOM.nextBytes(salt);
         byte[] hashed = pbkdf2(password, salt, ITERATIONS, KEY_BITS);
         return ITERATIONS + ":" + Base64.getEncoder().encodeToString(salt) + ":" + Base64.getEncoder().encodeToString(hashed);
     }

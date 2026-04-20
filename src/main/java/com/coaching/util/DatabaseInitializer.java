@@ -39,9 +39,7 @@ public final class DatabaseInitializer {
     private static void ensureColumnExists(Statement statement, String table, String column, String definition) throws SQLException {
         String safeTable = requireSqlIdentifier(table, "table");
         String safeColumn = requireSqlIdentifier(column, "column");
-        if (definition == null || !definition.matches("[A-Za-z0-9_ '(),]+")) {
-            throw new IllegalArgumentException("Invalid SQL definition");
-        }
+        String safeDefinition = requireAllowedDefinition(definition);
         boolean exists = false;
         try (ResultSet rs = statement.executeQuery("PRAGMA table_info(" + safeTable + ")")) {
             while (rs.next()) {
@@ -52,7 +50,7 @@ public final class DatabaseInitializer {
             }
         }
         if (!exists) {
-            statement.execute("ALTER TABLE " + safeTable + " ADD COLUMN " + safeColumn + " " + definition);
+            statement.execute("ALTER TABLE " + safeTable + " ADD COLUMN " + safeColumn + " " + safeDefinition);
         }
     }
 
@@ -61,5 +59,12 @@ public final class DatabaseInitializer {
             throw new IllegalArgumentException("Invalid SQL " + field);
         }
         return value;
+    }
+
+    private static String requireAllowedDefinition(String definition) {
+        if ("TEXT NOT NULL DEFAULT ''".equals(definition)) {
+            return definition;
+        }
+        throw new IllegalArgumentException("Unsupported SQL definition");
     }
 }
