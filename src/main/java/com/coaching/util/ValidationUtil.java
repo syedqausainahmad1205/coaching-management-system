@@ -19,6 +19,13 @@ public final class ValidationUtil {
         }
     }
 
+    public static void validatePassword(String password) {
+        requireNonBlank(password, "Password");
+        if (password.length() < 6) {
+            throw new ValidationException("Password must be at least 6 characters");
+        }
+    }
+
     public static int parseNonNegativeInt(String value, String field) {
         try {
             int parsed = Integer.parseInt(value.trim());

@@ -12,7 +12,7 @@ import java.util.List;
 
 public class StudentDAO {
     public List<Student> findAll(String keyword) {
-        String sql = "SELECT id,name,email,phone,address,enrollment_date FROM students WHERE (?='' OR name LIKE ? OR email LIKE ?) ORDER BY id DESC";
+        String sql = "SELECT id,name,email,phone,address,enrollment_date,password_hash FROM students WHERE (?='' OR name LIKE ? OR email LIKE ?) ORDER BY id DESC";
         List<Student> students = new ArrayList<>();
         try (DatabaseConnection.PooledConnection pooled = DatabaseConnection.getConnection();
              PreparedStatement ps = pooled.unwrap().prepareStatement(sql)) {
@@ -22,8 +22,7 @@ public class StudentDAO {
             ps.setString(3, "%" + key + "%");
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    students.add(new Student(rs.getInt("id"), rs.getString("name"), rs.getString("email"),
-                            rs.getString("phone"), rs.getString("address"), rs.getString("enrollment_date")));
+                    students.add(mapStudent(rs));
                 }
             }
             return students;
@@ -32,8 +31,40 @@ public class StudentDAO {
         }
     }
 
+    public Student findById(int id) {
+        String sql = "SELECT id,name,email,phone,address,enrollment_date,password_hash FROM students WHERE id=?";
+        try (DatabaseConnection.PooledConnection pooled = DatabaseConnection.getConnection();
+             PreparedStatement ps = pooled.unwrap().prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapStudent(rs);
+                }
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Failed to fetch student by id", e);
+        }
+    }
+
+    public Student findByEmail(String email) {
+        String sql = "SELECT id,name,email,phone,address,enrollment_date,password_hash FROM students WHERE email=?";
+        try (DatabaseConnection.PooledConnection pooled = DatabaseConnection.getConnection();
+             PreparedStatement ps = pooled.unwrap().prepareStatement(sql)) {
+            ps.setString(1, email);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapStudent(rs);
+                }
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Failed to fetch student by email", e);
+        }
+    }
+
     public void insert(Student student) {
-        String sql = "INSERT INTO students(name,email,phone,address,enrollment_date) VALUES(?,?,?,?,?)";
+        String sql = "INSERT INTO students(name,email,phone,address,enrollment_date,password_hash) VALUES(?,?,?,?,?,?)";
         try (DatabaseConnection.PooledConnection pooled = DatabaseConnection.getConnection();
              PreparedStatement ps = pooled.unwrap().prepareStatement(sql)) {
             ps.setString(1, student.name());
@@ -41,6 +72,7 @@ public class StudentDAO {
             ps.setString(3, student.phone());
             ps.setString(4, student.address());
             ps.setString(5, student.enrollmentDate());
+            ps.setString(6, student.passwordHash());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new DatabaseException("Failed to insert student", e);
@@ -48,7 +80,7 @@ public class StudentDAO {
     }
 
     public void update(Student student) {
-        String sql = "UPDATE students SET name=?, email=?, phone=?, address=?, enrollment_date=? WHERE id=?";
+        String sql = "UPDATE students SET name=?, email=?, phone=?, address=?, enrollment_date=?, password_hash=? WHERE id=?";
         try (DatabaseConnection.PooledConnection pooled = DatabaseConnection.getConnection();
              PreparedStatement ps = pooled.unwrap().prepareStatement(sql)) {
             ps.setString(1, student.name());
@@ -56,7 +88,8 @@ public class StudentDAO {
             ps.setString(3, student.phone());
             ps.setString(4, student.address());
             ps.setString(5, student.enrollmentDate());
-            ps.setInt(6, student.id());
+            ps.setString(6, student.passwordHash());
+            ps.setInt(7, student.id());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new DatabaseException("Failed to update student", e);
@@ -71,5 +104,11 @@ public class StudentDAO {
         } catch (SQLException e) {
             throw new DatabaseException("Failed to delete student", e);
         }
+    }
+
+    private Student mapStudent(ResultSet rs) throws SQLException {
+        return new Student(rs.getInt("id"), rs.getString("name"), rs.getString("email"),
+                rs.getString("phone"), rs.getString("address"), rs.getString("enrollment_date"),
+                rs.getString("password_hash"));
     }
 }
