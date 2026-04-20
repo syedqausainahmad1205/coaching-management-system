@@ -33,5 +33,7 @@ class ValidationUtilTest {
     void rejectsInvalidEmail() {
         assertThrows(ValidationException.class, () -> ValidationUtil.validateEmail("bad-email"));
         assertThrows(ValidationException.class, () -> ValidationUtil.validateEmail("user@domain"));
+        assertThrows(ValidationException.class, () -> ValidationUtil.validateEmail("user@domain..com"));
+        assertThrows(ValidationException.class, () -> ValidationUtil.validateEmail(".user@domain.com"));
     }
 }

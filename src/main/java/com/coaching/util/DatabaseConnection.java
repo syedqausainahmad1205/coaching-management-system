@@ -41,7 +41,13 @@ public final class DatabaseConnection {
                 POOL.put(connection);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
-                throw new DatabaseException("Interrupted while returning DB connection", e);
+                if (!POOL.offer(connection)) {
+                    try {
+                        connection.close();
+                    } catch (SQLException closeEx) {
+                        throw new DatabaseException("Failed to close leaked DB connection", closeEx);
+                    }
+                }
             }
         }
     }

@@ -19,7 +19,7 @@ public class CourseService {
         double parsedFee = ValidationUtil.parseNonNegativeDouble(fee, "Fee");
         int parsedCapacity = ValidationUtil.parseNonNegativeInt(capacity, "Capacity");
         int parsedEnrolled = ValidationUtil.parseNonNegativeInt(enrolledStudents, "Enrolled Students");
-        Integer parsedInstructor = parseOptionalInt(instructorId);
+        Integer parsedInstructor = parseInstructorIdOrNull(instructorId);
         dao.insert(new Course(null, name.trim(), trim(description), trim(duration), parsedFee, parsedInstructor,
                 parsedCapacity, parsedEnrolled));
     }
@@ -30,7 +30,7 @@ public class CourseService {
         double parsedFee = ValidationUtil.parseNonNegativeDouble(fee, "Fee");
         int parsedCapacity = ValidationUtil.parseNonNegativeInt(capacity, "Capacity");
         int parsedEnrolled = ValidationUtil.parseNonNegativeInt(enrolledStudents, "Enrolled Students");
-        Integer parsedInstructor = parseOptionalInt(instructorId);
+        Integer parsedInstructor = parseInstructorIdOrNull(instructorId);
         dao.update(new Course(id, name.trim(), trim(description), trim(duration), parsedFee, parsedInstructor,
                 parsedCapacity, parsedEnrolled));
     }
@@ -43,7 +43,7 @@ public class CourseService {
         dao.adjustEnrollmentCount(courseId, 1);
     }
 
-    private Integer parseOptionalInt(String value) {
+    private Integer parseInstructorIdOrNull(String value) {
         if (value == null || value.trim().isEmpty()) {
             return null;
         }

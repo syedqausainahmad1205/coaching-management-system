@@ -14,7 +14,7 @@ public final class ValidationUtil {
 
     public static void validateEmail(String email) {
         requireNonBlank(email, "Email");
-        if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
+        if (!email.matches("^[A-Za-z0-9](?:[A-Za-z0-9+_-]|\\.(?=[A-Za-z0-9+_-]))*@[A-Za-z0-9-]+(?:\\.[A-Za-z0-9-]+)*\\.[A-Za-z]{2,}$")) {
             throw new ValidationException("Invalid email format");
         }
     }
